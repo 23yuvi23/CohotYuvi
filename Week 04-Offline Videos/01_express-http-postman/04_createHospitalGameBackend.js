@@ -115,6 +115,14 @@ app.post("/", function (req, res) {
  * Update all the unhealthy kidney to healthy kidney, if there are no unhealthy kidney then return a 411 status code
  */
 
+function isThereAtleastOneUnhealthyKidney() {
+    for (let i = 0; i < users[0].kidneys.length; i++) {
+        if (users[0].kidneys[i].healthy === false) {
+            return true; // agar ek bhi unhealthy kidney mil gayi
+        }
+    }
+    return false; // sab healthy hai
+}
 
 app.put("/", function (req, res) {
     console.log("put method called");
