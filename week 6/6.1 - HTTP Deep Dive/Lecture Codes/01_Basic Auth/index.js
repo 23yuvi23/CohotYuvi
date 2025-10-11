@@ -72,6 +72,14 @@ app.post("/signin" , (req,res)=>{
     }
 })
 
+//now we will create a third end point where user will ask for his data after logging in 
+//authentication -> for this we will use headers
+// body -> togive thing that the endpoint need
+//headers->to give metadata that work on all end points 
+//this endpoint will only return info if you signed in and u are the desired user acc to the token 
+app.get("/me",(req,res)=>{
+
+})
 
 
 app.listen(3000)
