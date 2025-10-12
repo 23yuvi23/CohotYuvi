@@ -6,10 +6,13 @@ const app = express()
 app.use(express.json())
 
 const users= []
+
+//-----------------------------route handler that run html with backend 
 app.get("/",(req,res)=>{
     res.sendFile(__dirname + "/public/index.html")
 })
 
+//-------------------------------signup route 
 app.post("/signup",(req,res)=>{
     const username = req.body.username
     const password = req.body.password
@@ -20,6 +23,7 @@ app.post("/signup",(req,res)=>{
     res.json({message:"successfully signed up"})
 })
 
+//-------------------------------signin route 
 app.post("/signin",(req,res)=>{
     const username = req.body.username
     const password = req.body.password
@@ -46,6 +50,7 @@ app.post("/signin",(req,res)=>{
     }
 })
 
+//--------------------------middleware that authenticate 
 function auth(req,res,next){
 const token = req.headers.authorization
   if(!token){
