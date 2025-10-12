@@ -1,30 +1,15 @@
-const express = require("express")
-const app = express();
+//encryption -> encoding
 
-// function signinHandler (req,res){
-
-// }
+const express = require ("express")
+const app = express()
+const jwt = require("jsonwebtoken")
+const JWT_SECRET = "randomWord"
 
 app.use(express.json()) //middleware to parse the body 
 
 //create an array as global variable
 const users = [];
 
-//create a function that generate random strings in form of tokens
-function generateTokens(){
-    let options  =    ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 
-        'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
-        'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-        'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 
-        'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', 
-        '5', '6', '7', '8', '9'];
-
-         let token = ""
-         for(let i=0;i<32;i++){
-            token+= options[Math.floor(Math.random()*options.length)]
-         }
-         return token
-}
 
 
 app.post("/signup" , (req,res)=>{
@@ -58,11 +43,14 @@ app.post("/signin" , (req,res)=>{
         }
     })
 
-    if(Founduser) {
-        const token = generateTokens()
-        Founduser.token = token;
+    if(Founduser) { 
+        const token = jwt.sign({ username: username},JWT_SECRET)  // 2 argument 
+
+
+        // Founduser.token = token;
         res.json({
             array : users ,
+            token : token , 
             message :  "token generated"
         }) 
     } else {
@@ -72,24 +60,25 @@ app.post("/signin" , (req,res)=>{
     }
 })
 
-//now we will create a third end point where user will ask for his data after logging in 
-//authentication -> for this we will use headers
-// body -> togive thing that the endpoint need
-//headers->to give metadata that work on all end points 
-//this endpoint will only return info if you signed in and u are the desired user acc to the token 
+
 app.get("/me",(req,res)=>{
-    const token = req.headers.token
+    const token = req.headers.token //jwt token now user will send
+
+    //will get back json object in the variable {username : "yuvi"}
+    const decodedIndormation = jwt.verify(token, JWT_SECRET) 
+    const username = decodedIndormation.username
     let founduser = null;
 
+
     for(let i =0;i<users.length;i++){
-        if(users[i].token == token){
+        if(users[i].username == username){
             founduser = users[i]
         }
     }
 
     if (founduser){
         res.json({
-            username:founduser.username,
+            username: founduser.username,
             password:founduser.password
         })
     }else{
