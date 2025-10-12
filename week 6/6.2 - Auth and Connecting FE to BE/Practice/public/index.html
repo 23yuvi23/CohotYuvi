@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Login page</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        async function signup(){
+            const username = document.getElementById("signup_username").value
+            const password = document.getElementById("signup_password").value
+
+            await axios.post("http://localhost:3000/signup",{
+                username:username,
+                password:password
+            })
+            alert("successfully signed up")
+        }
+
+        async function signin(){
+            const username = document.getElementById("signin_username").value
+            const password = document.getElementById("signin_password").value
+
+            const response = await axios.post("http://localhost:3000/signin",{
+                username:username,
+                password:password
+            })
+            localStorage.setItem("token",response.data.jwt_token)
+            alert("successfully signed in")
+        }
+
+        async function getuserinfo(){
+            const response = await axios.get("http://localhost:3000/me",{
+                headers:{
+                    authorization: localStorage.getItem("token")
+                }
+            })
+            document.getElementById("information").innerHTML = "WELCOME " +response.data.username
+        }
+
+        getuserinfo()
+    </script>
+</head>
+<body>
+    <div>
+        Signup
+        <input type="text" name="enter username" id="signup_username">
+        <input type="password" name="enter password" id="signup_password">
+        <button onclick="signup()">signup</button>
+    </div>
+
+    <div>
+        Signin
+        <input type="text" name="enter username" id="signin_username">
+        <input type="password" name="enter password" id="signin_password">
+        <button onclick="signin()">signin</button>
+    </div>
+
+    <div id="information">
+        
+    </div>
+
+</body>
+</html>
