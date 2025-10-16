@@ -6,10 +6,10 @@ try {
     console.log(a.length);
 
     // print message to console
-    console.log("Hi I am inside try block");
+    console.log("Hi I am inside1 try block");
 } catch (error) {
     // print error message to console
-    console.log("Hi I am inside catch block");
+    console.log("Hi I am inside2 catch block");
 }
 
 // print message to console
