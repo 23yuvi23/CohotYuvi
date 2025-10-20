@@ -1,79 +1,146 @@
-const express = require ("express")
-const jwt = require("jsonwebtoken")
-const JWT_SECRET = "i am a sercert for this database"
+// Import the express, mongoose, and jwt modules
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+
+// Import the UserModel and TodoModel from the db.js file
+const { UserModel, TodoModel } = require("./db");
+
+// Create an instance of the express module
 const app = express();
 
-const mongoose = require("mongoose")
-//importing database model here that we exported in ./db.js 
-const {UserModel,TodoModel} = require("./db")
-
-//use of middleware
+// Parse the JSON data using the express.json() middleware
 app.use(express.json());
 
-app.post("/signup",async (req,res)=>{
+// Connect to the MongoDB database using the mongoose.connect() method
+mongoose.connect("mongodb+srv://100xdevs:WvaTca0509mb90YX@cluster0.ossjd.mongodb.net/todo-yuvi-1");
 
+// Create a JWT_SECRET variable for the secret key
+const JWT_SECRET = "hellobacchomajaloclasska";
+
+// Create a POST route for the signup endpoint
+app.post("/signup", async function (req, res) {
+    // Get the email, password, and name from the request body
+    const email = req.body.email;
+    const password = req.body.password;
     const name = req.body.name;
+
+    try {
+        // Create a new user using the UserModel.create() method
+        await UserModel.create({
+            email: email,
+            password: password,
+            name: name,
+        });
+    } catch (error) {
+        return res.status(400).json({
+            message: "User already exists!",
+        });
+    }
+
+    // Send a response to the client
+    res.json({
+        message: "You are signed up!",
+    });
+});
+
+// Create a POST route for the signin endpoint
+app.post("/signin", async function (req, res) {
+    // Get the email and password from the request body
     const email = req.body.email;
     const password = req.body.password;
 
-    //since the mongo db server are somewhere else and it take time to req and get the response back so we use here await 
-    await UserModel.create({
-        email:email,
-        password:password,
-        name:name
-    })
-
-    //if we not use await then no matter if above have ome issue in connecting to db then also it says you are logged in 
-    //so we await there till it is confirm that we are actually logged in 
-    res.json({
-        message:"you are logged in successfully"
-    })
-
-
-})
-
-
-app.post("/signin", async (req,res)=>{
-        const password = req.body.password;
-        const email = req.body.email;
-
-         const user = await UserModel.findOne({
-            email:email,
-            password:password
-        })
-
-    if(user){
-        const token = token.sign({
-            id:user._id
-        })
-        res.json({
-            token,
-            message:"welcome user you are logged in"
-        })
-
-    } else res.status(404).json({
-        message:"invalid username or password try again !!!"
-    })
-
-console.log(user);
-})
-
-
-//authenticaltion middleware
-// app.authy((req,res,next)=>{
-//     console.log();
+    // Find the user with the given email and password
+    const user = await UserModel.findOne({
+        email: email,
+        password: password,
+    });
+    console.log(user);
     
-//     next()
-// })
 
-//the below data only visible if user is logged in
-app.post("/todo",(req,res)=>{
+    // If the user is found, create a JWT token and send it to the client
+    if (user) {
+        // Create a JWT token using the jwt.sign() method
+        const token = jwt.sign(
+            {
+                id: user._id.toString(),
+            },
+            JWT_SECRET
+        );
 
-})
+        // Send the token to the client
+        res.json({
+            token: token,
+            message: "You are signed in!",
+        });
+    } else {
+        // If the user is not found, send an error message to the client
+        res.status(403).json({
+            message: "Invalid Credentials!",
+        });
+    }
+});
 
-app.get("/todos",(req,res)=>{
+// Create an auth middleware function to authenticate the user
+function auth(req, res, next) {
+    // Get the token from the request headers
+    const token = req.headers.authorization;
 
-})
+    // Verify the token using the jwt.verify() method
+    const decodedData = jwt.verify(token, JWT_SECRET);
 
+    // If the token is valid, set the userId in the request object and call the next middleware
+    if (decodedData) {
+        // Set the userId in the request object
+        req.userId = decodedData.id;
 
-app.listen(3000)
+        // Call the next middleware
+        next();
+    } else {
+        // If the token is invalid, send an error message to the client
+        res.status(403).json({
+            message: "Invalid Token!",
+        });
+    }
+}
+
+// Create a POST route for the todo endpoint
+app.post("/todo", auth, async function (req, res) {
+    // Get the userId from the request object
+    const userId = req.userId;
+
+    // Get the title, and done from the request body
+    const title = req.body.title;
+    const done = req.body.done;
+
+    // Create a new todo using the TodoModel.create() method
+    await TodoModel.create({
+        userId,
+        title,
+        done,
+    });
+
+    // Send a response to the client
+    res.json({
+        message: "Todo created",
+    });
+});
+
+// Create a GET route for the todo endpoint
+app.get("/todo", auth, async function (req, res) {
+    // Get the userId from the request object
+    const userId = req.userId;
+
+    // Find all the todos with the given userId
+    const todos = await TodoModel.find({
+        userId,
+    });
+
+    // Send the todos to the client
+    res.json({
+        todos,
+    });
+});
+
+// Start the server on port 3000
+app.listen(3000);
