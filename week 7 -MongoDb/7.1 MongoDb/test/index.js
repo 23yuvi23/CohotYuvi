@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require ("jsonwebtoken");
 const secret = "Abcdefg";
 
-mongoose.connect("mongodb+srv://yuvi:K84UrZYmYzxbVZ@cluster0.mezc5vr.mongodb.net/Test01")
+mongoose.connect("")
 app.post("/signup",async(req,res)=>{
 
     const { name, email, password } = req.body;

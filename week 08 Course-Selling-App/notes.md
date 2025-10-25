@@ -169,7 +169,7 @@ a basic skeleton like this
 ```javascript
 const mongoose = require("mongoose")
 console.log("connected to mongo")
-mongoose.connect("mongodb+srv://yuvi:password]@cluster0.mezc5vr.mongodb.net/coursera-app")
+mongoose.connect("mongodb+srv://yuvi:K84UrZYmYzxbVZ@cluster0.mezc5vr.mongodb.net/coursera-app")
 
 
 const Schema = mongoose.Schema
@@ -217,5 +217,25 @@ module.exports={
     purchaseModel:purchaseModel
 }
 ```
+
+- use .env to keep your enviroment variables safe like mongo db connection url 
+    - npm install dotenv
+    - in the .env file 
+      ```env
+      MONGO_URI=connection string here   without anny space or "" . 
+      JWT_SECRET=Abcdefg
+      ```
+    - ⚠️ Don’t use quotes " " in .env — just plain text.
+    - import in index.js `require("dotenv").config();`
+    - in index.js call it like this 
+    ```js
+    async function main(){
+    await mongoose.connect(MONGO_URI)
+    app.listen(3000)
+    console.log("listening on port 3000")
+    }
+    ```
+    - Hide .env from GitHub put .env inside gitignore
+    
 
 

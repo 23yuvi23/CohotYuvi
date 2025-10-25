@@ -1,5 +1,9 @@
+require("dotenv").config();
 const express = require("express")
 const app = express();
+const MONGO_URI = process.env.MONGO_URI;
+
+const mongoose = require("mongoose")
 
 //importing
 const {userRouter} = require("./routes/user")
@@ -10,4 +14,12 @@ const {adminRouter} = require("./routes/admin")
 app.use("/user",userRouter)
 app.use("/course",courceRouter)
 app.use("/admin",adminRouter)
-app.listen(3000)
+
+
+async function main(){
+    await mongoose.connect(MONGO_URI)
+    app.listen(3000)
+    console.log("listening on port 3000")
+}
+
+main()
