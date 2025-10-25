@@ -24,7 +24,7 @@ const app = express();
 app.use(express.json());
 
 // Connect to MongoDB database using mongoose (MongoDB connection string for a specific cluster)
-mongoose.connect("mongodb+srv://100xdevs:WvaTca0509mb90YX@cluster0.ossjd.mongodb.net/todos-app-week-7-2");
+mongoose.connect("");
 
 // Signup route for creating a new user
 app.post("/signup", async function (req, res) {

@@ -8,7 +8,7 @@ const jwt = require ("jsonwebtoken");
 const secret = "Abcdefg";
 const z = require ("zod")
 
-mongoose.connect("mongodb+srv://yuvi:K84UrZYmYzxbVZ@cluster0.mezc5vr.mongodb.net/Test01")
+mongoose.connect("")
 app.post("/signup",async(req,res)=>{
 
     //defining a zod schema
