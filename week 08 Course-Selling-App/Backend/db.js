@@ -1,0 +1,48 @@
+const mongoose = require("mongoose")
+console.log("connected to mongo")
+mongoose.connect("mongodb+srv://yuvi:K84UrZYmYzxbVZ@cluster0.mezc5vr.mongodb.net/coursera-app")
+
+const Schema = mongoose.Schema
+const ObjectId = mongoose.Types.ObjectId
+
+const userSchema = new Schema({
+    // _id : objectId,
+    email :{type: String, unique:true},
+    password :String,
+    firstName : String,
+    lastName : String
+})
+
+const adminSchema = new Schema({
+    // _id : objectId,
+    email :String,
+    password :String,
+    firstName : String,
+    lastName : String
+})
+const courseSchema = new Schema({
+    // _id :objectId,
+    title : String,
+    description : String,
+    price : Number,
+    imageUrl : String,
+    creatorId : ObjectId 
+})
+const purchaseSchema = new Schema({
+    // _id :objectId,
+    courseId : ObjectId ,    //refers to cource schema
+    userId : ObjectId       //refers to user schema
+})
+
+
+const UserModel = mongoose.model("user" , userSchema)
+const adminModel = mongoose.model("admin" , adminSchema)
+const courseModel = mongoose.model("course" , courseSchema)
+const purchaseModel = mongoose.model("purchase" , purchaseSchema)
+
+module.exports={
+    UserModel:UserModel,
+    adminModel:adminModel,
+    courseModel:courseModel,
+    purchaseModel:purchaseModel
+}
