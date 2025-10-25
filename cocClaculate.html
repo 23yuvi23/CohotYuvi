@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>COC Loot Attack Calculator</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#16a34a;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,#071129 0%, #071b2a 100%);color:#e6eef8;margin:0;padding:24px;}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px 10px;text-align:right;font-size:14px}
+    th{color:var(--muted);text-align:left;border-bottom:1px solid rgba(255,255,255,0.04)}
+    td input{width:100%;box-sizing:border-box;background:transparent;border:1px dashed rgba(255,255,255,0.03);padding:6px;border-radius:6px;color:inherit;text-align:right}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    button, .btn{background:var(--accent);color:#041018;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .small{font-size:13px;padding:6px 10px}
+    .totals{display:flex;gap:12px;margin-top:12px;align-items:stretch}
+    .stat{flex:1;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);}
+    .stat h3{margin:0;font-size:13px;color:var(--muted)}
+    .stat p{margin:8px 0 0;font-size:18px;font-weight:700}
+    .controls{display:flex;gap:8px;align-items:center;margin-top:10px}
+    label{font-size:13px;color:var(--muted)}
+    .foot{margin-top:14px;color:var(--muted);font-size:13px}
+    .right{text-align:right}
+    .muted{color:var(--muted)}
+    .danger{background:#8b1d1d}
+    @media(max-width:720px){th,td{font-size:13px} .totals{flex-direction:column} .actions{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>COC Loot Attack Calculator</h1>
+        <p class="lead">Manually attacks dalo — calculate karo kitne attack lagenge full hone ke liye. (Default targets set kiye gaye hain)</p>
+      </div>
+      <div class="muted">Made quick • Simple</div>
+    </header>
+
+    <div class="card">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <div>
+          <label>Target Gold</label><br>
+          <input id="targetGold" type="number" value="6000000" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;width:160px;text-align:right">
+        </div>
+        <div>
+          <label>Target Elixir</label><br>
+          <input id="targetElixir" type="number" value="6000000" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;width:160px;text-align:right">
+        </div>
+        <div>
+          <label>Target Dark Elixir</label><br>
+          <input id="targetDark" type="number" value="420000" style="padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;width:160px;text-align:right">
+        </div>
+
+        <div style="margin-left:auto" class="controls">
+          <button id="addRow" class="btn small">Add Attack</button>
+          <button id="calc" class="btn small">Calculate</button>
+          <button id="save" class="btn secondary small">Save</button>
+          <button id="load" class="btn secondary small">Load</button>
+          <button id="clear" class="btn danger small">Clear All</button>
+        </div>
+      </div>
+
+      <table id="attacksTable" aria-label="Attacks table">
+        <thead>
+          <tr>
+            <th style="width:8%">#</th>
+            <th style="text-align:left">Player / Note</th>
+            <th>Gold</th>
+            <th>Elixir</th>
+            <th>Dark Elixir</th>
+            <th style="width:12%">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <!-- rows inserted here -->
+        </tbody>
+      </table>
+
+      <div class="totals">
+        <div class="stat">
+          <h3>Total Gold Collected</h3>
+          <p id="totalGold">0</p>
+          <div class="muted">Remaining: <span id="remGold">0</span> • Attacks needed: <strong id="needGold">0</strong></div>
+        </div>
+        <div class="stat">
+          <h3>Total Elixir Collected</h3>
+          <p id="totalElixir">0</p>
+          <div class="muted">Remaining: <span id="remElixir">0</span> • Attacks needed: <strong id="needElixir">0</strong></div>
+        </div>
+        <div class="stat">
+          <h3>Total Dark Elixir Collected</h3>
+          <p id="totalDark">0</p>
+          <div class="muted">Remaining: <span id="remDark">0</span> • Attacks needed: <strong id="needDark">0</strong></div>
+        </div>
+      </div>
+
+      <div class="foot">Overall attacks required to fill <strong>all</strong> (max of above): <span id="overallNeed">0</span></div>
+    </div>
+
+    <p style="margin-top:10px;color:var(--muted)">Usage: har attack ka loot dal do (Gold, Elixir, Dark Elixir). <strong>Calculate</strong> pe click karoge to total aur average calculate hoga aur bata dega kitne aur attacks chahiye target full karne ke liye. Defaults ko change kar sakte ho.</p>
+  </div>
+
+  <script>
+    const tbody = document.getElementById('tbody');
+    const addRowBtn = document.getElementById('addRow');
+    const calcBtn = document.getElementById('calc');
+    const saveBtn = document.getElementById('save');
+    const loadBtn = document.getElementById('load');
+    const clearBtn = document.getElementById('clear');
+
+    const targetGoldInput = document.getElementById('targetGold');
+    const targetElixirInput = document.getElementById('targetElixir');
+    const targetDarkInput = document.getElementById('targetDark');
+
+    const totalGoldEl = document.getElementById('totalGold');
+    const totalElixirEl = document.getElementById('totalElixir');
+    const totalDarkEl = document.getElementById('totalDark');
+
+    const remGoldEl = document.getElementById('remGold');
+    const remElixirEl = document.getElementById('remElixir');
+    const remDarkEl = document.getElementById('remDark');
+
+    const needGoldEl = document.getElementById('needGold');
+    const needElixirEl = document.getElementById('needElixir');
+    const needDarkEl = document.getElementById('needDark');
+    const overallNeedEl = document.getElementById('overallNeed');
+
+    function formatNum(n){
+      return Number(n).toLocaleString('en-IN');
+    }
+
+    function createRow(index, data={player:'',gold:'',elixir:'',dark:''}){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index}</td>
+        <td style="text-align:left"><input class="player" value="${escapeHtml(data.player)}" placeholder="Note / player"/></td>
+        <td><input class="gold" type="number" value="${data.gold}" min="0" step="1"/></td>
+        <td><input class="elixir" type="number" value="${data.elixir}" min="0" step="1"/></td>
+        <td><input class="dark" type="number" value="${data.dark}" min="0" step="1"/></td>
+        <td class="right"><button class="btn small remove">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+
+      tr.querySelector('.remove').addEventListener('click', ()=>{ tr.remove(); refreshIndex();});
+    }
+
+    function refreshIndex(){
+      Array.from(tbody.children).forEach((tr,i)=> tr.children[0].textContent = i+1);
+    }
+
+    function getRows(){
+      return Array.from(tbody.querySelectorAll('tr')).map(tr=>({
+        player: tr.querySelector('.player').value || '',
+        gold: Number(tr.querySelector('.gold').value) || 0,
+        elixir: Number(tr.querySelector('.elixir').value) || 0,
+        dark: Number(tr.querySelector('.dark').value) || 0
+      }));
+    }
+
+    function calculate(){
+      const rows = getRows();
+      const totalGold = rows.reduce((s,r)=> s + r.gold, 0);
+      const totalElixir = rows.reduce((s,r)=> s + r.elixir, 0);
+      const totalDark = rows.reduce((s,r)=> s + r.dark, 0);
+
+      totalGoldEl.textContent = formatNum(totalGold);
+      totalElixirEl.textContent = formatNum(totalElixir);
+      totalDarkEl.textContent = formatNum(totalDark);
+
+      const targetGold = Number(targetGoldInput.value) || 0;
+      const targetElixir = Number(targetElixirInput.value) || 0;
+      const targetDark = Number(targetDarkInput.value) || 0;
+
+      const remGold = Math.max(0, targetGold - totalGold);
+      const remElixir = Math.max(0, targetElixir - totalElixir);
+      const remDark = Math.max(0, targetDark - totalDark);
+
+      remGoldEl.textContent = formatNum(remGold);
+      remElixirEl.textContent = formatNum(remElixir);
+      remDarkEl.textContent = formatNum(remDark);
+
+      // average per attack
+      const attacks = rows.length || 0;
+      const avgGold = attacks ? Math.floor(totalGold / attacks) : 0;
+      const avgElixir = attacks ? Math.floor(totalElixir / attacks) : 0;
+      const avgDark = attacks ? Math.floor(totalDark / attacks) : 0;
+
+      // attacks needed (ceil)
+      const needGold = avgGold ? Math.ceil(remGold / avgGold) : (remGold>0? Infinity:0);
+      const needElixir = avgElixir ? Math.ceil(remElixir / avgElixir) : (remElixir>0? Infinity:0);
+      const needDark = avgDark ? Math.ceil(remDark / avgDark) : (remDark>0? Infinity:0);
+
+      needGoldEl.textContent = isFinite(needGold)? needGold : '—';
+      needElixirEl.textContent = isFinite(needElixir)? needElixir : '—';
+      needDarkEl.textContent = isFinite(needDark)? needDark : '—';
+
+      const overall = Math.max(isFinite(needGold)?needGold:0, isFinite(needElixir)?needElixir:0, isFinite(needDark)?needDark:0);
+      overallNeedEl.textContent = overall === 0 && remGold+remElixir+remDark === 0 ? 0 : (overall===0? '—' : overall);
+
+      // extra info in console
+      console.log({totalGold,totalElixir,totalDark,avgGold,avgElixir,avgDark,needGold,needElixir,needDark});
+    }
+
+    function save(){
+      const payload = {rows:getRows(), targets:{gold:Number(targetGoldInput.value)||0, elixir:Number(targetElixirInput.value)||0, dark:Number(targetDarkInput.value)||0}};
+      localStorage.setItem('coc_loot_calc', JSON.stringify(payload));
+      alert('Saved locally ✅');
+    }
+
+    function load(){
+      const raw = localStorage.getItem('coc_loot_calc');
+      if(!raw){ alert('No saved data found'); return; }
+      const data = JSON.parse(raw);
+      tbody.innerHTML='';
+      (data.rows||[]).forEach((r,i)=> createRow(i+1, r));
+      targetGoldInput.value = data.targets?.gold ?? targetGoldInput.value;
+      targetElixirInput.value = data.targets?.elixir ?? targetElixirInput.value;
+      targetDarkInput.value = data.targets?.dark ?? targetDarkInput.value;
+      refreshIndex();
+      calculate();
+      alert('Loaded ✅');
+    }
+
+    function clearAll(){
+      if(!confirm('Clear all attacks and totals?')) return;
+      tbody.innerHTML='';
+      createRow(1,{});
+      calculate();
+    }
+
+    function escapeHtml(text){
+      return String(text).replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    }
+
+    // initial row
+    createRow(1,{});
+
+    addRowBtn.addEventListener('click', ()=>{ createRow(tbody.children.length+1, {}); });
+    calcBtn.addEventListener('click', calculate);
+    saveBtn.addEventListener('click', save);
+    loadBtn.addEventListener('click', load);
+    clearBtn.addEventListener('click', clearAll);
+
+    // enter key in last row adds new row quickly
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        calculate();
+      }
+    });
+  </script>
+</body>
+</html>
