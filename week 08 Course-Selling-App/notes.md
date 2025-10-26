@@ -242,5 +242,5 @@ module.exports={
     when u have node js backend we use  auth with google -> passport.js
     when we have nextjs backend we user auth with google -> nextauth.js
 
-
+from 32 Title » 8 2 Backend Of Course Selling App Part 2
 
