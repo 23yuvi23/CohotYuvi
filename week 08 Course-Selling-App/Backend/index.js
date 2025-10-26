@@ -11,9 +11,9 @@ const {courceRouter} = require("./routes/course")
 const {adminRouter} = require("./routes/admin")
 
 //structure
-app.use("/user",userRouter)
-app.use("/course",courceRouter)
-app.use("/admin",adminRouter)
+app.use("/api/v1/user",userRouter)
+app.use("/api/v1/course",courceRouter)
+app.use("/api/v1/admin",adminRouter)
 
 
 async function main(){

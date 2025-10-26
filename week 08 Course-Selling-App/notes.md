@@ -237,5 +237,10 @@ module.exports={
     ```
     - Hide .env from GitHub put .env inside gitignore
     
+    - now we create a middleware for user and admin auth  
+    cmd+shift+l  -> in vs code will select all the related text 
+    when u have node js backend we use  auth with google -> passport.js
+    when we have nextjs backend we user auth with google -> nextauth.js
+
 
 

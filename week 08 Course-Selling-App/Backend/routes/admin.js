@@ -15,19 +15,19 @@ adminRouter.post("/signin",(req,res)=>{
 })
 
 
-adminRouter.post("/course",(req,res)=>{
+adminRouter.post("/",(req,res)=>{
     res.json({
     message:"create a cource endpoint hit"
         })
 })
 
-adminRouter.put("/course",(req,res)=>{
+adminRouter.put("/",(req,res)=>{
     res.json({
     message:"change price etc of a cource"
         })
 })
 
-adminRouter.get("/course/bulk",(req,res)=>{
+adminRouter.get("/bulk",(req,res)=>{
     res.json({
     message:"give all cource that are created"
         })
