@@ -244,3 +244,20 @@ module.exports={
 
 from 32 Title » 8 2 Backend Of Course Selling App Part 2
 
+ -  now i will wrote signup and signin logic in admin.js
+    installing library required  'bcrypt zod jsonwebtoken'
+
+    i can also write in my  package.json like this 
+    after 
+
+```    
+    "main":index.js,
+    "scripts":{
+        "start": "node index.js",
+        "dev" : "nodemon index.js"
+      }
+
+```
+so what it will do is now i can simply run my code by writing `npm run start`  will run my code now and if i run `npm run dev` it will run my code with nodemon if nodemon is installed
+
+
