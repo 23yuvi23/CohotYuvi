@@ -278,3 +278,7 @@ if(user){
 - now added /signup and / signin logic in `admin.js`
   - changes i made in this route is added adminModel instead of userModel and added async before the function 
   - in /signin endpoint also changed name from user to admin also added `email :{type: String, unique:true},`  so that entry remain unique
+
+- now i will srite down the middleware logic 
+  - created a seperate folder called middleware and 2 files in it user.js and admin.js
+  
