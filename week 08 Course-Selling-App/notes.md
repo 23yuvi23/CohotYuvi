@@ -260,4 +260,21 @@ from 32 Title » 8 2 Backend Of Course Selling App Part 2
 ```
 so what it will do is now i can simply run my code by writing `npm run start`  will run my code now and if i run `npm run dev` it will run my code with nodemon if nodemon is installed
 
+///////////////mistakes i had in my project
+- working on sign in endpoint and getting some error one of the error was solved by replacing` .find with findOne`
+- another mistake i was doing is in this field as shown below i was not inserting DOT `.` after `user`
+```
+if(user){
+       const token =  jwt.sign({
+            id:user._id             // here user._id
+        },JWT_USER_PASSWORD);
+}
+```
+- added bcrypt library for hashed password   `bcrypt.hash(myPlaintextPassword, saltRounds)`  
+- in the /signin route used this to check the bcrypt password    `const passwordMatch = await bcrypt.compare(password , user.password)`
+- finally completed signup and signin route with hashed password using `bcrypt`
 
+
+- now added /signup and / signin logic in `admin.js`
+  - changes i made in this route is added adminModel instead of userModel and added async before the function 
+  - in /signin endpoint also changed name from user to admin also added `email :{type: String, unique:true},`  so that entry remain unique

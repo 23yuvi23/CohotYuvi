@@ -3,17 +3,18 @@ const userRouter = Router();
 const {userModel}=require("../db")
 const jwt = require("jsonwebtoken")
 const JWT_USER_PASSWORD = "userSeceretKey"
-
+const bcrypt = require("bcrypt")
+const saltRounds = 4 
 
 userRouter.post("/signup",async (req,res)=>{
     const {email,password,firstname,lastname} = req.body;  //TODO : adding zod validation
     //TODO : hash the password so plain text pass is not stored in db
-
+    const hashedPassword = await bcrypt.hash(password, saltRounds) 
     //TODO : put inside a try catch block
     try{
     await userModel.create({
         email,
-        password,
+        password:hashedPassword,
         firstname,
         lastname
     })
@@ -32,30 +33,33 @@ userRouter.post("/signup",async (req,res)=>{
 userRouter.post("/signin",async (req,res)=>{
     const { email , password } = req.body;
     
-    //TODO: hashed password logic will be applied here too after applying it in signup using bcrypt
-    const user = await userModel.findOne({
-        email:email,
-        password,password
-    })
-    
-    if(user){
-       const token =  jwt.sign({
+    try {
+        const user = await userModel.findOne({email:email})
+        if(!user){
+            res.status(404).json({
+                message : "username is incorrect "
+                
+            })
+            return
+        }
+const passwordMatch = await bcrypt.compare(password , user.password)
+
+if(!passwordMatch){
+    res.status(404).json({message: "incorrect password"})
+}
+const token =  jwt.sign({
             id:user._id
         },JWT_USER_PASSWORD);
-
-        //TODO: do cookie logic 
-        res.json({
+                res.json({
             token:token
         })
-    } else {
-        res.status(403).json({
-            message:"username or password mismatch !!!"
-        })
-    }
+}
 
-    res.json({
-    message:"Signin endpoint"
-        })
+        //TODO: do cookie logic 
+catch(e){
+    res.status(500).json({message:"some error occured while signin"})
+}
+
 })
 
 userRouter.get("/purchased",(req,res)=>{
