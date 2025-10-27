@@ -4,13 +4,14 @@
   "description": "/**\r Create a course selling app\r     - Initialize a new Node.js project\r     - Add Express, jsonwebtoken, mongoose to it as a dependency\r     - Create index.js\r     - Add route skeleton for user login, signup, purchase a course, sees all course, see the purchased course\r     - Add routes for admin login, admin signup, create a course, delete a course, add course content.\r     - Add middlewares for user and admin auth\r     - Add a database (mongodb), use dotenv to store the database connection string\r     - Define the schema for User, Admin, Course, Purchase\r     - Complete the routes for user login, signup, purchase a course, see course",
   "main": "index.js",
   "scripts": {
-        "start": "node index.js",
-        "dev" : "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.2",

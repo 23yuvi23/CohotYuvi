@@ -1,7 +1,8 @@
 const {Router} = require("express")
 const userRouter = Router();
 const {userModel}=require("../db")
-
+const jwt = require("jsonwebtoken")
+const JWT_USER_PASSWORD = "userSeceretKey"
 
 
 userRouter.post("/signup",async (req,res)=>{
@@ -28,7 +29,30 @@ userRouter.post("/signup",async (req,res)=>{
 }
 })
 
-userRouter.post("/signin",(req,res)=>{
+userRouter.post("/signin",async (req,res)=>{
+    const { email , password } = req.body;
+    
+    //TODO: hashed password logic will be applied here too after applying it in signup using bcrypt
+    const user = await userModel.findOne({
+        email:email,
+        password,password
+    })
+    
+    if(user){
+       const token =  jwt.sign({
+            id:user._id
+        },JWT_USER_PASSWORD);
+
+        //TODO: do cookie logic 
+        res.json({
+            token:token
+        })
+    } else {
+        res.status(403).json({
+            message:"username or password mismatch !!!"
+        })
+    }
+
     res.json({
     message:"Signin endpoint"
         })
