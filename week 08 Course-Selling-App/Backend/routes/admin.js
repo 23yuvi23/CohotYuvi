@@ -1,9 +1,10 @@
 const {Router } = require("express")
 const adminRouter = Router();
-const {adminModel } = require("../db")
+const {adminModel, courseModel } = require("../db")
 const jwt = require("jsonwebtoken")
-const JWT_ADMIN_PASSWORD = "adminSeceretKey"
-const bcrypt = require("bcrypt")
+const {JWT_ADMIN_PASSWORD} = require("../config")
+const bcrypt = require("bcrypt");
+const { adminMiddleware } = require("../middleware/admin");
 const saltRounds = 5
 //bcrypt zod jsonwebtoken
 
@@ -63,9 +64,22 @@ catch(e){
 })
 
 
-adminRouter.post("/course",(req,res)=>{
+adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
+    const adminId = req.userId
+    const {title,description , imageUrl , price} = req.body;
+
+    //todo : creating a web3 saas in 6 hours
+    const cource = await courseModel.create({
+        title : title,
+        description : description , 
+        imageUrl : imageUrl, 
+        price : price , 
+        creatorId : adminId
+    })
+
     res.json({
-    message:"create a cource endpoint hit"
+    message:"create a cource endpoint hit",
+    courceId : cource._id
         })
 })
 

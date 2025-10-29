@@ -282,3 +282,32 @@ if(user){
 - now i will srite down the middleware logic 
   - created a seperate folder called middleware and 2 files in it user.js and admin.js
   
+- createad a config.js where all the password stuff is saved like seceret key
+  - then completed the middleware logic 
+  ```javascript
+    const jwt = require("jsonwebtoken")
+    const { JWT_USER_PASSWORD } = require ("../config")  //imported 
+
+    function userMiddleware (req, res, next) {
+        const token = req.headers.token
+        const decoded =  jwt.verify(token, JWT_USER_PASSWORD)  //jwt.verify
+
+        if(decoded){
+            req.userID = decoded.id;
+            next()
+        }else{
+            res.status(403).json({
+                message : "you are not signed in"
+            })
+        }
+    }
+
+    module.exports = {
+        userMiddleware:userMiddleware
+    }
+    
+  ```
+ - then added this to the `admin.js` 
+ - the bad thing in this is we are taking imageURL from the user so for uploading actual image 
+ - TODO : watch creating a web3 saas in 6 hours  - Harkirat video over youtube 
+

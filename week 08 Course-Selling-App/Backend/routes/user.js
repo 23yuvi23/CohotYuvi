@@ -2,7 +2,7 @@ const {Router} = require("express")
 const userRouter = Router();
 const {userModel}=require("../db")
 const jwt = require("jsonwebtoken")
-const JWT_USER_PASSWORD = "userSeceretKey"
+const {JWT_USER_PASSWORD} = require("../config")
 const bcrypt = require("bcrypt")
 const saltRounds = 4 
 
