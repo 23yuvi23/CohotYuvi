@@ -47,7 +47,7 @@ const { email , password } = req.body;
 const passwordMatch = await bcrypt.compare(password , admin.password)
 
 if(!passwordMatch){
-    res.status(404).json({message: "incorrect password"})
+   return res.status(404).json({message: "incorrect password"})
 }
 const token =  jwt.sign({
             id:admin._id
@@ -59,17 +59,17 @@ const token =  jwt.sign({
 
         //TODO: do cookie logic 
 catch(e){
-    res.status(500).json({message:"some error occured while signin"})
+    return res.status(500).json({message:"some error occured while signin"})
 }
 })
 
-
+//create a course 
 adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
     const adminId = req.userId
     const {title,description , imageUrl , price} = req.body;
 
     //todo : creating a web3 saas in 6 hours
-    const cource = await courseModel.create({
+    const course = await courseModel.create({
         title : title,
         description : description , 
         imageUrl : imageUrl, 
@@ -79,17 +79,20 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
 
     res.json({
     message:"course created",
-    courceId : cource._id
+    courseId : course._id
         })
 })
 
+//update a course 
 adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
   const adminId = req.userId
-    const {title,description , imageUrl , price , courceId} = req.body;
+    const {title,description , imageUrl , price , courseId} = req.body;
 
     //todo : creating a web3 saas in 6 hours
-    const cource = await courseModel.updateOne({
-        _id:courceId  //filter
+    const course = await courseModel.updateOne({
+        _id:courseId,  //filter what course to update 
+        //also we will check weater correct person changing his course or trying to mess with someone else course
+        creatorId:adminId
     },{
         title : title,
         description : description , 
@@ -98,14 +101,21 @@ adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
     })
 
     res.json({
-    message:"cource updated",
-    courceId : cource._id
+    message:"course updated",
+    courseId : courseId
         })
 })
 
-adminRouter.get("/course/bulk",(req,res)=>{
+//get all your course
+adminRouter.get("/course/bulk",adminMiddleware, async(req,res)=>{
+    const adminId = req.userId
+        const courses = await courseModel.find({
+        creatorId:adminId
+    })
+
     res.json({
-    message:"give all cource that are created"
+    message:"your courses are ",
+    courses
         })
 })
 

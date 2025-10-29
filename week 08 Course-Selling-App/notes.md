@@ -318,5 +318,112 @@ if(user){
 - now in admin.js   working on creation and update of cource part 
 
 in update cource we are using .updateOne   and it takes  filter,update,options so we define accordingly
- from 1:13:05   cource update part  checking ki kuch galti hai ya nahi 
+    from 1:13:05   cource update part  checking ki kuch galti hai ya nahi 
+    so the mistake was that we were only sending the `cource id` so koi dusra creator bhi us id mai kuch bhi change kar skta tha which is not good so what we will do is we will also check the `creatorId:adminId`   so that ek creator sirf apne cource mai change kar paye kisi aur ke mai nahi
  
+- after that the last one in admin which is get all your cource 
+    so here i basically chnaged courceModel.find
+    ```javascript
+        /get all your cource
+    adminRouter.get("/course/bulk",adminMiddleware, async(req,res)=>{
+        const adminId = req.userId
+            const cources = await courseModel.find({
+            creatorId:adminId
+        })
+
+        res.json({
+        message:"your cources are ",
+        cources
+            })
+    })
+
+    module.exports = {
+        adminRouter:adminRouter
+    }
+    ```
+
+    onevid courceid - 6901eee6d13cf6574a786416           yuvi@gmail.com
+                      6901ef28d13cf6574a786419           mannu@gmail.com
+    
+    ### CourseId field nai mera bahut bheja khaya aur finally chat gpt se ye clear kia mene 
+    
+    ```md
+
+        Tu finally **core concept** pe aa gaya 👑
+
+        Bilkul **yehi hota hai**:
+
+        ---
+
+        ### 🔍 Jab tu course **create** karta hai:
+
+        MongoDB khud ek `_id` generate karta hai, jaise:
+
+        ```
+        "_id": "671a12bc3de45f67890abcd1"
+        ```
+
+        aur tu backend me likhta hai:
+
+        ```js
+        res.json({
+        message: "course created",
+        courseId: course._id
+        });
+        ```
+
+        Matlab tu frontend ko bol raha hai:
+
+        > “Ye raha tera course ka unique ID, ise save kar le — future me jab tu update ya delete karega, to mujhe ye ID dena.”
+
+        ---
+
+        ### 🔄 Jab tu course **update** karta hai:
+
+        Tu frontend se bhejta hai:
+
+        ```json
+        {
+        "title": "React Course Updated",
+        "courseId": "671a12bc3de45f67890abcd1"
+        }
+        ```
+
+        Ab backend me ye line:
+
+        ```js
+        const { title, courseId } = req.body;
+        ```
+
+        `courseId` variable ke andar wo hi value aa jaati hai.
+
+        Aur jab tu likhta hai:
+
+        ```js
+        await courseModel.updateOne({ _id: courseId }, { title });
+        ```
+
+        to backend bolta hai:
+
+        > “MongoDB! Jis course ka `_id` ye hai (`courseId`), uska title update kar de.”
+
+        ---
+
+        ### 🧠 So in short:
+
+        | Field        | Source                                  | Purpose                                               |
+        | ------------ | --------------------------------------- | ----------------------------------------------------- |
+        | `_id`        | MongoDB                                 | Unique identifier of document                         |
+        | `courseId`   | frontend (copied from `_id`)            | Name tu khud de raha hai, bas readable banane ke liye |
+        | `course._id` | backend ke course object ka internal ID | MongoDB field                                         |
+
+        ---
+
+        💬 **To haan bhai**,
+        basically humne `courseId` naam ka variable banaya hai jo MongoDB ke `_id` ke equal hai.
+        Bas naam readability ke liye change karte hain taaki frontend/backend easily baat kar sake 👌
+
+        Chahe to mai tujhe ek chhota visual flow schema bana du (request → backend → Mongo → response) —
+        ek hi diagram me sab clear ho jaayega, bana du?
+
+    ```
