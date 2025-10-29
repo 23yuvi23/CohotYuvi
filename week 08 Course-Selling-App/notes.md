@@ -318,3 +318,5 @@ if(user){
 - now in admin.js   working on creation and update of cource part 
 
 in update cource we are using .updateOne   and it takes  filter,update,options so we define accordingly
+ from 1:13:05   cource update part  checking ki kuch galti hai ya nahi 
+ 
