@@ -78,14 +78,28 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
     })
 
     res.json({
-    message:"create a cource endpoint hit",
+    message:"course created",
     courceId : cource._id
         })
 })
 
-adminRouter.put("/course",(req,res)=>{
+adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
+  const adminId = req.userId
+    const {title,description , imageUrl , price , courceId} = req.body;
+
+    //todo : creating a web3 saas in 6 hours
+    const cource = await courseModel.updateOne({
+        _id:courceId  //filter
+    },{
+        title : title,
+        description : description , 
+        imageUrl : imageUrl, 
+        price : price ,
+    })
+
     res.json({
-    message:"change price etc of a cource"
+    message:"cource updated",
+    courceId : cource._id
         })
 })
 

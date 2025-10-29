@@ -283,6 +283,10 @@ if(user){
   - created a seperate folder called middleware and 2 files in it user.js and admin.js
   
 - createad a config.js where all the password stuff is saved like seceret key
+- installed dotenv npm package for `.env` file
+- moved seceret key to .env file and imported that to `config.js`  like this 
+`const JWT_USER_PASSWORD = process.env.JWT_USER_PASSWORD`
+
   - then completed the middleware logic 
   ```javascript
     const jwt = require("jsonwebtoken")
@@ -311,3 +315,6 @@ if(user){
  - the bad thing in this is we are taking imageURL from the user so for uploading actual image 
  - TODO : watch creating a web3 saas in 6 hours  - Harkirat video over youtube 
 
+- now in admin.js   working on creation and update of cource part 
+
+in update cource we are using .updateOne   and it takes  filter,update,options so we define accordingly
