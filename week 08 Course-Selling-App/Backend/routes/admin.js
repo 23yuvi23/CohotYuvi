@@ -2,13 +2,33 @@ const {Router } = require("express")
 const adminRouter = Router();
 const {adminModel, courseModel } = require("../db")
 const jwt = require("jsonwebtoken")
+const zod = require("zod")
 const {JWT_ADMIN_PASSWORD} = require("../config")
 const bcrypt = require("bcrypt");
 const { adminMiddleware } = require("../middleware/admin");
+const { ZodType } = require("zod");
 const saltRounds = 5
 //bcrypt zod jsonwebtoken
 
+
 adminRouter.post("/signup",async (req,res)=>{
+
+    const requireBody = zod.object({
+    email: zod.string().email().min(5),
+    password:zod.string().min(5),
+    firstname:zod.string().min(3),
+    lastname:zod.string().min(3)
+})
+
+const parseDataWithSuccess = requireBody.safeParse(req.body)
+
+if(!parseDataWithSuccess.success){
+    return res.status(500).send({
+        message:"Incorrect Data Format !!!",
+        error: parseDataWithSuccess.error
+    })
+}
+
  const {email,password,firstname,lastname} = req.body;  //TODO : adding zod validation
     //TODO : hash the password so plain text pass is not stored in db
     const hashedPassword = await bcrypt.hash(password, saltRounds) 
@@ -33,6 +53,20 @@ adminRouter.post("/signup",async (req,res)=>{
 })
 
 adminRouter.post("/signin",async (req,res)=>{
+    const requireBody = zod.object({
+        email: zod.string().min(5).email(),
+        password:zod.string().min(5)
+    })
+
+    const parseDataWithSuccess = requireBody.safeParse(req.body)
+
+    if(!parseDataWithSuccess.success){
+        return res.status(500).json({
+            message:"Incorrect data format",
+            error:parseDataWithSuccess.error
+        })
+    }
+
 const { email , password } = req.body;
     
     try {
@@ -66,6 +100,22 @@ catch(e){
 //create a course 
 adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
     const adminId = req.userId
+
+    const requireBody = zod.object({
+        title : zod.string().min(3),
+        description:zod.string().min(10),
+        imageUrl:zod.string().url()          ,     //check how to put image url
+        price:  zod.number().positive(),                          //check price zod
+    })
+
+    const parseDataWithSuccess = requireBody.safeParse(req.body)
+
+    if(!parseDataWithSuccess.success) {
+        return res.status(500).json({
+            message : " there is some issue in the format part ",
+            error : parseDataWithSuccess.error
+        })
+    }
     const {title,description , imageUrl , price} = req.body;
 
     //todo : creating a web3 saas in 6 hours
@@ -86,6 +136,21 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
 //update a course 
 adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
   const adminId = req.userId
+  const requireBody = zod.object({
+    title:zod.string().min(3).optional(),
+    description:zod.string().min(10).optional(),
+    imageUrl:zod.string().url().optional(),
+    price:zod.number().positive().optional(),
+    courceId:zod.string().min(5)
+  })
+  const parseDataWithSuccess = requireBody.safeParse(req.body)
+
+  if(!parseDataWithSuccess.success){
+    res.status(500).json({
+        message:"there is some format error in your data",
+        error:parseDataWithSuccess.error
+    })
+  } 
     const {title,description , imageUrl , price , courseId} = req.body;
 // Attempt to find the course in the database using the provided courseId and adminId
     const course = await courseModel.findOne({
@@ -110,8 +175,8 @@ adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
         imageUrl: imageUrl || course.imageUrl, // Update imageUrl if provided, otherwise keep the existing imageUrl
         price: price || course.price, // Update price if provided, otherwise keep the existing price
     })
-    console.log("Received courseId:", courseId);
-    res.json({
+    // console.log("Received courseId:", courseId);
+    res.status(200).json({
     message:"course updated",
     courseId : course._id
         })

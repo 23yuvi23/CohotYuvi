@@ -435,3 +435,29 @@ while sending info in body in postman courseId likhne ki bajaye i was writing co
 - now i have to add zod  with help of 
 https://github.com/Bharat2044/100xDevs-Cohort3-WebDev-and-Devops/blob/main/Week%2008%20-%20Course%20Selling%20App/8.2%20-%20Backend%20of%20Course%20Selling%20App%20-%20Part%202/Lecture%20Codes/Course-Selling-App/routes/admin.js
 
+- now i used zod validation in my signup endpoint an eg of it is below 
+    ```javascript
+    //importing zod in the program `admin.js`
+    const zod = require(zod)
+
+    adminRouter.post("/signup",async (req,res)=>{
+
+        const requireBody = zod.object({
+        email: zod.string().email().min(5),
+        password:zod.string().min(4),
+        firstname:zod.string().min(3),
+        lastname:zod.string().min(3)
+    })
+    //parse data to check weater data is valid or not 
+    const parseDataWithSuccess = requireBody.safeParse(req.body)
+    //output acc to the parse data weater it is success or not
+    if(!parseDataWithSuccess){
+        return res.status(500).send({
+            message:"Incorrect Data Format !!!",
+            error: parseDataWithSuccess.error
+        })
+    }
+    })
+
+    ```
+- completed aadmin route with zod validations used zod like above some extra like `zod.optional()` and `zod.number().positive()`
