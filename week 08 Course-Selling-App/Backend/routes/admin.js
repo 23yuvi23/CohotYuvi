@@ -87,24 +87,36 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
 adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
   const adminId = req.userId
     const {title,description , imageUrl , price , courseId} = req.body;
+// Attempt to find the course in the database using the provided courseId and adminId
+    const course = await courseModel.findOne({
+        _id: courseId, // Match the course by ID
+        creatorId: adminId, // Ensure the admin is the creator
+    });
 
+    // If the course is not found, respond with an error message
+    if (!course) {
+        return res.status(404).json({
+            message: "Course not found!", // Inform the client that the specified course does not exist
+        });
+    }
     //todo : creating a web3 saas in 6 hours
-    const course = await courseModel.updateOne({
-        _id:courseId,  //filter what course to update 
-        //also we will check weater correct person changing his course or trying to mess with someone else course
-        creatorId:adminId
+    await courseModel.updateOne(
+      {
+        _id: courseId,         // course jisko update karna hai
+        creatorId: adminId     // ensure wahi admin update kar raha hai
     },{
-        title : title,
-        description : description , 
-        imageUrl : imageUrl, 
-        price : price ,
+        title: title || course.title, // Update title if provided, otherwise keep the existing title
+        description: description || course.description, // Update description if provided, otherwise keep the existing description
+        imageUrl: imageUrl || course.imageUrl, // Update imageUrl if provided, otherwise keep the existing imageUrl
+        price: price || course.price, // Update price if provided, otherwise keep the existing price
     })
-
+    console.log("Received courseId:", courseId);
     res.json({
     message:"course updated",
-    courseId : courseId
+    courseId : course._id
         })
 })
+
 
 //get all your course
 adminRouter.get("/course/bulk",adminMiddleware, async(req,res)=>{

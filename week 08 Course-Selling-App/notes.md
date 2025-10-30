@@ -427,3 +427,11 @@ in update cource we are using .updateOne   and it takes  filter,update,options s
         ek hi diagram me sab clear ho jaayega, bana du?
 
     ```
+
+a silly mistake which i was doing  jiski wjh se mera cource update nahi hora tha that was 
+while sending info in body in postman courseId likhne ki bajaye i was writing courceId  s-c
+
+
+- now i have to add zod  with help of 
+https://github.com/Bharat2044/100xDevs-Cohort3-WebDev-and-Devops/blob/main/Week%2008%20-%20Course%20Selling%20App/8.2%20-%20Backend%20of%20Course%20Selling%20App%20-%20Part%202/Lecture%20Codes/Course-Selling-App/routes/admin.js
+
