@@ -31,23 +31,34 @@ if(!parseDataWithSuccess.success){
 
  const {email,password,firstname,lastname} = req.body;  //TODO : adding zod validation
     //TODO : hash the password so plain text pass is not stored in db
+
+    try {
+    // ✅ check if admin already exists
+    const existing = await adminModel.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ message: "Admin already exists ❌" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, saltRounds) 
-    //TODO : put inside a try catch block
-    try{
-    await adminModel.create({
-        email,
-        password:hashedPassword,
-        firstname,
-        lastname
-    })
+
+// ✅ Save and capture the created admin
+    const admin = await adminModel.create({
+      email,
+      password: hashedPassword,
+      firstName: firstname, // notice capital F (match schema)
+      lastName: lastname
+    });
+
 
     res.json({
-    message:"Signup succeeded ✅ "
+    message:"Signup succeeded ✅ " ,
+    adminId: admin._id // ✅ confirm unique 
     })
-} catch (e){
+} catch (e) {
     console.error(e);
-    return  res.status(404).json({
-        message:"signup failed !!!!! ❌ "
+    return res.status(500).json({
+      message: "Signup failed !!!!! ❌",
+      error: e.message
     })
 }
 })
@@ -104,8 +115,8 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
     const requireBody = zod.object({
         title : zod.string().min(3),
         description:zod.string().min(10),
-        imageUrl:zod.string().url()          ,     //check how to put image url
-        price:  zod.number().positive(),                          //check price zod
+        imageUrl:zod.string()          ,     //check how to put image url
+         price:zod.string(),                          //check price zod
     })
 
     const parseDataWithSuccess = requireBody.safeParse(req.body)
@@ -126,6 +137,7 @@ adminRouter.post("/course",adminMiddleware ,async (req,res)=>{
         price : price , 
         creatorId : adminId
     })
+    
 
     res.json({
     message:"course created",
@@ -139,9 +151,9 @@ adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
   const requireBody = zod.object({
     title:zod.string().min(3).optional(),
     description:zod.string().min(10).optional(),
-    imageUrl:zod.string().url().optional(),
-    price:zod.number().positive().optional(),
-    courceId:zod.string().min(5)
+    imageUrl:zod.string().optional(),
+    price:zod.string().optional(),
+    courseId:zod.string().min(5)
   })
   const parseDataWithSuccess = requireBody.safeParse(req.body)
 
@@ -185,7 +197,7 @@ adminRouter.put("/course",adminMiddleware ,async (req,res)=>{
 
 //get all your course
 adminRouter.get("/course/bulk",adminMiddleware, async(req,res)=>{
-    const adminId = req.userId
+    const adminId = req.userId;
         const courses = await courseModel.find({
         creatorId:adminId
     })
@@ -195,6 +207,25 @@ adminRouter.get("/course/bulk",adminMiddleware, async(req,res)=>{
     courses
         })
 })
+
+// // ✅ Route: Get only admin's own courses
+// adminRouter.get("/ownCourses", adminMiddleware, async (req, res) => {
+//   try {
+//     const adminId = req.userId; // Middleware se milta hai
+//     console.log("🔍 Admin ID:", adminId);
+
+//     const courses = await courseModel.find({ creatorId: adminId });
+
+//     if (courses.length === 0) {
+//       return res.json({ message: "Aapne abhi tak koi course create nahi kiya." });
+//     }
+
+//     res.json({ yourCourses: courses });
+//   } catch (err) {
+//     console.error("❌ Error fetching admin courses:", err);
+//     res.status(500).json({ message: "Server error while fetching courses" });
+//   }
+// });
 
 module.exports = {
     adminRouter:adminRouter

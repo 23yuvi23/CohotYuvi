@@ -477,3 +477,50 @@ Well-structured backend for a full-featured Course Selling App using
 
 ```
 ---
+
+Here’s your short **markdown note** version 👇
+
+---
+
+# 🧠 Bug Note: All Admins Getting Same ID
+
+## 🐞 Issue:
+
+Earlier code:
+
+  ```js
+    await adminModel.create({
+      email,
+      password: hashedPassword,
+      firstname,
+      lastname
+    });
+  ```
+
+* ❌ Didn’t store the created admin in a variable.
+* ❌ So couldn’t access unique `_id` → appeared like all IDs were same.
+
+---
+
+## ✅ Fixed Version:
+
+    ```js
+    const admin = await adminModel.create({
+      email,
+      password: hashedPassword,
+      firstName: firstname,
+      lastName: lastname
+    });
+
+    res.json({
+      message: "Signup succeeded ✅",
+      adminId: admin._id
+    });
+    ```
+
+---
+
+## 💡 Key Takeaway:
+
+Always **store created documents** (`const admin = await Model.create(...)`)
+→ Mongoose auto-generates a **unique `_id`** for every new record.

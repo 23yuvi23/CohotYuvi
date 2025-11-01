@@ -5,7 +5,6 @@ const Schema = mongoose.Schema
 const ObjectId = mongoose.Types.ObjectId
 
 const userSchema = new Schema({
-    // _id : objectId,
     email :{type: String, unique:true},
     password :String,
     firstName : String,
@@ -13,14 +12,12 @@ const userSchema = new Schema({
 })
 
 const adminSchema = new Schema({
-    // _id : objectId,
     email :{type: String, unique:true},
     password :String,
     firstName : String,
     lastName : String
 })
 const courseSchema = new Schema({
-    // _id :objectId,
     title : String,
     description : String,
     price : Number,
@@ -28,7 +25,6 @@ const courseSchema = new Schema({
     creatorId : ObjectId 
 })
 const purchaseSchema = new Schema({
-    // _id :objectId,
     courseId : ObjectId ,    //refers to cource schema
     userId : ObjectId       //refers to user schema
 })

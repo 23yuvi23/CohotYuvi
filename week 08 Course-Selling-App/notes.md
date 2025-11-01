@@ -522,3 +522,38 @@ https://github.com/Bharat2044/100xDevs-Cohort3-WebDev-and-Devops/blob/main/Week%
     - Frontend in ejs (low priority)
     - Frontend in react
 
+
+## There was some issue in my code so sabki id same ho jari thi 
+and the issue was 
+    - i was creating admin but was not storing it in any variable 
+
+    ```js
+
+        await adminModel.create({
+        email,
+        password: hashedPassword,
+        firstname,
+        lastname
+        });
+    ```
+    - this is the correct version 
+
+    ```js
+    // ✅ Yeh version me hum admin ko ek variable me store kar rahe hain
+    // jisse hume uska unique _id milta hai (har baar naya).
+
+    const admin = await adminModel.create({
+        email,
+        password: hashedPassword,
+        firstName: firstname, // schema ke field ke saath match kiya
+        lastName: lastname
+    });
+
+    // ✅ Ab naya admin bana, mongoose ne uska _id generate kar diya.
+    // ✅ Agar chahe to frontend ko id bhej sakte hain for confirmation.
+    res.json({
+        message: "Signup succeeded ✅",
+        adminId: admin._id   // <-- important difference!
+    });
+
+    ```
