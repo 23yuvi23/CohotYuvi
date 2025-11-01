@@ -54,8 +54,8 @@ if(!parseDataWithSuccess.success){
 
 adminRouter.post("/signin",async (req,res)=>{
     const requireBody = zod.object({
-        email: zod.string().min(5).email(),
-        password:zod.string().min(5)
+        email: zod.string().min(4).email(),
+        password:zod.string().min(4)
     })
 
     const parseDataWithSuccess = requireBody.safeParse(req.body)

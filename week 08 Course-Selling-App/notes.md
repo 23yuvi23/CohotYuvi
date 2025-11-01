@@ -461,3 +461,64 @@ https://github.com/Bharat2044/100xDevs-Cohort3-WebDev-and-Devops/blob/main/Week%
 
     ```
 - completed aadmin route with zod validations used zod like above some extra like `zod.optional()` and `zod.number().positive()`
+
+---
+---
+
+- now i simply added all validations in users as well 
+    then for` user purchased`  route we first need to get the `purchase route in cource ` 
+    so completed `course.js`  with `purchase and preview` route 
+## now the last endpoint for user is to see all of his purchases 
+    so  steps in that i did
+
+    - get the user id  
+    ` const userId = req.userId;`
+
+    - make sure you are using the userMiddleware
+
+    - get all the purchases of the given user 
+    ```javascrippt
+     const purchases = await  purchaseModel.find({
+     userId
+     })
+    ```
+    - return the user his all the puchases 
+    ```javascript
+        res.json({
+            purchases 
+        })
+    ```
+    - full code is below 
+
+    ```js
+    userRouter.get("/purchased",userMiddleware,async (req,res)=>{
+    const userId = req.userId;
+    const purchases = await  purchaseModel.find({
+        userId
+    })
+
+    res.json({
+        purchases 
+        })
+    })
+    ```
+
+- so now i am updating in user.js `purchases route` 
+    i was getting id and stuff in output but to get exact course name the redable data form i will use map like this 
+
+    ```js
+     // If purchases are found, extract the courseIds from the found purchases
+    const purchasesCourseIds = purchases.map((purchase) => purchase.courseId);
+
+    // Find all course details associated with the courseIds
+    const coursesData = await courseModel.find({
+        _id: { $in: purchasesCourseIds }, // Querying courses using the extracted course IDs
+    });
+    ```
+# TODOS Future 
+    - better way to do this is by references  will do it in some other time 
+    - use cookies instead of JWT for auth 
+    - Add a rate limiting middleware 
+    - Frontend in ejs (low priority)
+    - Frontend in react
+
