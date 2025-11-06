@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+</head>
+<body>
+    <div id="buttonParent">
+
+    </div>
+
+
+    <script>
+        let state  = {           //step 1 defined my state variable
+            count:0
+        }
+        function onButtonPress(){        //step 2 defined this fxn that just  ++ the state count 
+            state.count++;
+            buttonComponentReRender()
+        }
+
+        function buttonComponentReRender(){  // step3 a fxn that ReRenders the state
+            document.getElementById("buttonParent").innerHTML = "";
+            const button = document.createElement("button");
+            button.innerHTML = `Counter ${state.count}`;
+            button.setAttribute("onclick", `onButtonPress()`);
+            document.getElementById("buttonParent").appendChild(button)
+        }  // this will return this  <button onclick="onButtonPress">Counter 0</button>
+        buttonComponentReRender();
+    </script>
+</body>
+</html>
