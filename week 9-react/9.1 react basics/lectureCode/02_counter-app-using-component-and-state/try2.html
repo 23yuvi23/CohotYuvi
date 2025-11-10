@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="parentbtn">
+        test
+    </div>
+    
+    <script>
+        let state = {
+            count : 0,
+            color : "red"
+        }
+
+        function onButtonPress(){
+            state.count++;
+            state.color = Math.random() > 0.5 ? "blue" : "Orange"
+            buttonComponentRerender()
+        }
+
+        function buttonComponentRerender() {
+            document.getElementById("parentbtn").innerHTML="";
+            const button = document.createElement("button")
+            button.innerHTML = `count ${state.count}`
+            button.setAttribute("onclick",`onButtonPress()`)
+            button.setAttribute("style",`background-color: ${state.color}`)  // yha par attribute jese define hai uske according kaam hota hai 
+            document.getElementById("parentbtn").appendChild(button)
+        }
+
+        buttonComponentRerender()
+    </script>
+</body>
+</html>

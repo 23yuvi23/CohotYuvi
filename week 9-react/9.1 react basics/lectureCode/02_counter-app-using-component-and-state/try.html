@@ -20,11 +20,12 @@
             buttonComponentRerender();
         }
 
-        function buttonComponentRerender(){
+        function buttonComponentRerender(count,color){
         document.getElementById("parentbtn").innerHTML="";
         const button = document.createElement("button")
         button.innerHTML = `count ${state.count}`
         button.setAttribute("onclick",`onButtonPress()`)
+
         document.getElementById("parentbtn").appendChild(button)
         }
 
