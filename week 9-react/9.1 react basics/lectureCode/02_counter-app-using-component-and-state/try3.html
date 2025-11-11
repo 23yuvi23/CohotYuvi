@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+  </head>
+  <body id="body">
+<div id="parentBtn">
+  test
+</div>
+      <script>
+        //present
+        let state = {
+        count : 0,
+        color:"red",
+        background : "white",
+        padding: "0px",
+        borderRadius: "0px"
+  
+}
+
+function onbuttonpress() {
+//future
+  state.count++
+  state.color = "blue"
+  state.background = "black"
+  state.padding = "20px"
+  state.borderRadius = "100px"
+  onbuttonpressRerender()
+}
+
+function onbuttonpressRerender(){
+  document.getElementById('parentBtn').innerHTML=""
+  const button = document.createElement("button")
+  button.innerHTML=`count ${state.count}`
+  button.setAttribute("onclick","onbuttonpress()")
+  button.setAttribute(
+  "style",
+  `
+    color: ${state.color};
+    padding: ${state.padding};
+    border-radius: ${state.borderRadius};
+  `
+);
+
+  const body = document.getElementById("body")
+  body.setAttribute("style",`background-color: ${state.background}`)
+
+  document.getElementById("parentBtn").appendChild(button)
+}
+
+onbuttonpressRerender()
+      </script>
+  </body>
+</html>
