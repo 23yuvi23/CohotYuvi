@@ -19,7 +19,9 @@ function Counter() {
     setInterval(function () {
       setCount(count=>count + 1);
     }, 1000);
-  }, []);
+  }, []); 
+  //dependency array, cleanup, fetch inside useEffect
+
 
   return (
     <div>
