@@ -1,5 +1,6 @@
 const { Router } = require ("express")
 const adminRouter = Router();
+const {adminModel} = require ("../db")       //imorting database adminModel in admin file
 
 // asdminRouter.use(adminMiddleware)
 adminRouter.post('/signup', (req, res) => {
