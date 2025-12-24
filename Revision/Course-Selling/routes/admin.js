@@ -2,10 +2,11 @@ const { Router } = require ("express")
 const adminRouter = Router();
 const jwt = require("jsonwebtoken")
 const {adminModel} = require ("../db")       //imorting database adminModel in admin file
-const JWT_SECRET = process.env.JWT_ADMIN_PASSWORD; // from env file
+const { JWT_ADMIN_SECRET } = require("../config")
 const bcrypt = require("bcrypt");
 const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS);
-const zod = require("zod")
+const zod = require("zod");
+const { adminMiddleware } = require("../middleware/admin");
 
 //********************************************************************SIGNUP ENDPOINT *************************************************************************************************
 adminRouter.post('/signup', async (req, res) => {
@@ -82,7 +83,7 @@ try{
 }
 const token =  jwt.sign({
             id:admin._id
-        },JWT_SECRET);
+        },JWT_ADMIN_SECRET);
                 res.json({
             token:token
         })
@@ -93,7 +94,15 @@ const token =  jwt.sign({
 }
 })
 
-adminRouter.post('/course', (req, res) => {
+//********************************************************************course create ENDPOINT *************************************************************************************************
+
+adminRouter.post('/course', adminMiddleware , (req, res) => {
+
+  const adminId = req.userId;
+
+  const { title, description, imageUrl, price } = req.body;
+
+  await
   res.json({
     message:"create course endpoint"
   })

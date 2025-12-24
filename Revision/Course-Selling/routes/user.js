@@ -3,7 +3,7 @@ const { userModel } = require("../db")
 const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const userRouter = Router()
-const JWT_SECRET = process.env.JWT_USER_PASSWORD; // from env file
+const { JWT_USER_SECRET } = require("../config")
 const bcrypt = require("bcrypt");
 const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS);
 const zod = require("zod")
@@ -83,7 +83,7 @@ try{
 }
 const token =  jwt.sign({
             id:user._id
-        },JWT_SECRET);
+        },JWT_USER_SECRET);
                 res.json({
             token:token
         })
@@ -92,7 +92,7 @@ const token =  jwt.sign({
 }
 })
   
-//********************************************************************SIGNIN ENDPOINT *************************************************************************************************
+//********************************************************************purchases ENDPOINT *************************************************************************************************
 userRouter.get('/purchases', (req, res) => {
   res.json({
     message:"purchases endpoint"
