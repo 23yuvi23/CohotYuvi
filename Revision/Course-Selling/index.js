@@ -6,13 +6,15 @@ const {courseRouter}=require("./routes/course")
 const {adminRouter}=require("./routes/admin")
 const app = express()
 
-app.use("api/v1/user",userRouter);
-app.use("api/v1/course", courseRouter);
-app.use("api/v1/admin", adminRouter);
+app.use(express.json()); // ⭐ VERY IMPORTANT
+
+app.use("/api/v1/user",userRouter);
+app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/admin", adminRouter);
 
 async function main(){
 await mongoose.connect(process.env.MONGO_URI) //only when db connect then backend will begin
 app.listen(3000)
 console.log("listening on port 3000");
-}
+    }
 main()
