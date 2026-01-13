@@ -9,8 +9,22 @@ function App(){
             image:"https://appx-wsb-gcp-mcdn.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg",
             description:"what to know how to earn big ? Check out how theese folks won $6000 in bounties"
   }]
-  function addPost(){
 
+  const PostComponent = posts.map (post=><PostComponent
+            name={post.name}
+            subtitle={post.subtitle}
+            time={post.time}
+            image={post.image}
+            description={post.description}
+  />)
+  function addPost(){
+    posts.push({
+            name:"yuvi",
+            subtitle:"1100 followers",
+            time:"2m ago",
+            image:"https://appx-wsb-gcp-mcdn.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg",
+            description:"what to know how to earn big ? Check out how theese folks won $6000 in bounties"
+    })
   }
 
   return (
@@ -18,13 +32,7 @@ function App(){
       <button onClick={addPost}>Add post</button>
       <div style={{display: "flex",justifyContent:"center"}}>
         <div>
-          <PostComponent
-            name={"yuvi"}
-            subtitle={"1100 followers"}
-            time={"2m ago"}
-            image={"https://appx-wsb-gcp-mcdn.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg"}
-            description={"what to know how to earn big ? Check out how theese folks won $6000 in bounties"}
-          />
+          {PostComponent}
         </div>
       </div>
     </div>
