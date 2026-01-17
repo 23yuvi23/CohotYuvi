@@ -20,10 +20,11 @@ function App() {
     >Add value</button> {" "}
     <button
     onClick={removeValue}
-    >emove value</button>
+    >remove value</button>
     <p>Footer:{counter}</p>
     </>
   )
 }
 
 export default App
+
