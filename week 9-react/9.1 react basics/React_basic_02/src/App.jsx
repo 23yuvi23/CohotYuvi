@@ -17,7 +17,11 @@ function App() {
   // now to avoid above side effect will use useEffect 
   useEffect(()=>{
     setInterval(increaseCount,1000)
-  },[])
+  },[])   // this effect will run on mount because the array is empty 
+
+    useEffect(()=>{
+    console.log("count updated to " + count); 
+  },[count])     // this effect will run each time count get updated 
 
   
   return <div>
