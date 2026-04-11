@@ -169,7 +169,7 @@ a basic skeleton like this
 ```javascript
 const mongoose = require("mongoose")
 console.log("connected to mongo")
-mongoose.connect("mongodb+srv://yuvi:K84UrZYmYzxbVZ@cluster0.mezc5vr.mongodb.net/coursera-app")
+mongoose.connect("mongodb+srv://your key here")
 
 
 const Schema = mongoose.Schema
