@@ -1,11 +1,18 @@
-
 const App = () => {
   return (
     <div style={{ display: "flex" }}>
-      <Card children={<div style={{ color: "green" }}> What do u want to post <br /> <br />
-        <input type={"text"} />
-      </div>} />
-      <Card children={"hi there"} />
+
+{/* all below content automatically become children content*/}
+      <Card >
+        <div style={{ color: "green" }}>
+          What do u want to post <br /> <br />
+          <input type={"text"} />
+        </div>
+      </Card>
+
+      <Card >
+        hi there
+      </Card>
     </div>
   )
 }
