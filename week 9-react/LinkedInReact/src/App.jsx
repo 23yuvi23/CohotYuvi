@@ -5,6 +5,7 @@ import { useState } from 'react'
 function App() {
   const [currentTab, setCurrentTab] = useState("feed");
   const [todo, setTodo] = useState({});
+  const [loading,SetLoading] = useState(true);
 
   useEffect(() => {
     console.log("send Req to backend to get data for tab ", currentTab);
@@ -14,10 +15,12 @@ function App() {
 
   // todo wala 
  function fetchTodo() {
+  SetLoading(true)
     fetch("https://jsonplaceholder.typicode.com/todos/2")
       .then(async res => {
         const json = await res.json()
         setTodo(json)
+        SetLoading(false)
         console.log("Todo aaya:", json)
       })
   }
@@ -49,6 +52,7 @@ function App() {
       style={{ color: todo  ? "red" : "black" }}>Todo</button>
     {/* {todo.title} */}
       
+      {loading ? "Loading..." : todo.title}
   </div>
 }
 
