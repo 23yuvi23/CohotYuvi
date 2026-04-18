@@ -3,27 +3,29 @@ import React, { createContext, useContext, useState } from 'react'
 // context is always stored outside  App or in seperate file 
 const BulbContext = createContext();
 
+function BulbProvider ({children}) {
+  const [bulbOn, setBulbOn] = useState(true);
+  return <BulbContext.Provider value={{
+    bulbOn:bulbOn,
+    setBulbOn:setBulbOn
+  }}>
+    {children}
+  </BulbContext.Provider>
+}
 
 
 const App = () => {
-  const [bulbOn, setBulbOn] = useState(true)
-
   return (
     <div>
-      <BulbContext.Provider value = {{
-        bulbOn : bulbOn,
-        setBulbOn : setBulbOn
-      }}>
+      <BulbProvider>
         < Light/>
-      </BulbContext.Provider>
-     
+      </BulbProvider>
     </div>
   )
 
   function Light () {
     // bulbOn is a prop to the Bulb State component
     // bulbOn , setBulbOn are props to the ToggleBulbState component
-
     return <div>
       <LightBulb/>
       <LightSwitch/>
