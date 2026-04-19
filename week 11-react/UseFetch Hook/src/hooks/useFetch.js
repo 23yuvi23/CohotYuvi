@@ -34,6 +34,17 @@ export function useFetch(url) {
         getDetails();
     },[url])
 
+
+    //backend mai kuch change hua then real time data will change in every 10 sec
+    useEffect(()=>{
+        setInterval(getDetails,10 * 1000) 
+
+        return () => {
+    clearInterval(intervalId)
+  }
+  
+    },[])
+
     return {
         finalData,
         loading
